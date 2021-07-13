@@ -5,13 +5,18 @@
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
-<h1> in report page</h1>
+<h1>Report Page</h1>
+<h3>Here we generate monthly report!</h3>
+<h4>Please select month</h4>
 <form method="post" >
     {{csrf_field()}}
 <label for="month">Month: </label>
 <input type="text" id="month" name="month" class="monthPicker" />
  <button style="cursor:pointer" type="submit" class="btn btn-success">Submit</button>
 </form>
+<a href="/dashboard" class="btn btn-warning">Back </a>
+
+
 @if (!empty($users) && count($users))
     <table class="table table-sm">
         <thead>
@@ -30,7 +35,9 @@
         @endforeach
         </tbody>
     </table>
+@else
 
+<h2> No record for this month </h2>
 
 @endif
 

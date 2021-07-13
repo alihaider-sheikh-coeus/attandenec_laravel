@@ -11,7 +11,7 @@
 @if(Session::has('message'))
     <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
 @endif
-{{--{{dd($user)}};--}}
+{{--{{dd($user->email)}};--}}
 <form method="post" action="{{ action('UserController@updateUser', $user)}}" enctype="multipart/form-data">
     {{ csrf_field() }}
     {{ method_field('post') }}
@@ -26,10 +26,14 @@
         <input type="email" class="form-control"value="{{$user->email}}" id="email" name="email">
     </div>
 
-{{--    <div class="form-group">--}}
-{{--        <label for="password">Password:</label>--}}
-{{--        <input type="password" class="form-control" id="password" name="password">--}}
-{{--    </div>--}}
+    <div class="form-group">
+        <label for="password">New Password:</label>
+        <input type="password" class="form-control"  id="password" name="password">
+    </div>
+    <div class="form-group">
+        <label for="password">Confirm Password:</label>
+        <input type="password" class="form-control"  id="password_confirmation" name="password_confirmation">
+    </div>
 
     <div class="form-group">
         <label for="salary">Salary:</label>
@@ -42,8 +46,14 @@
     </div>
 
     <div class="form-check">
+{{--        @php$value=false;@endphp--}}
+{{--    @if ($user->is_hr==true)--}}
+{{--            {{$value=true}};--}}
+{{--        @else--}}
+{{--            {{$value=false}};--}}
+{{--@endif--}}
 
-        <input class="form-check-input" type="checkbox"  name="is_hr" value="{{ $user->is_hr  }}"  id="is_hr">
+        <input class="form-check-input" type="checkbox"  name="is_hr" value={{(bool)$user->is_hr}}  id="is_hr">
         <label class="form-check-label" for="is_hr">
             HR
         </label>
@@ -67,4 +77,4 @@
     </div>
 
 </form>
-</html>
+{{--</html>--}}

@@ -1,18 +1,6 @@
 @extends('basic_layout')
 <h1>Create Users</h1>
-@if (count($errors) > 0)
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
 
-@if(Session::has('message'))
-    <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
-@endif
 <form method="post" action={{ action('UserController@store')}} enctype="multipart/form-data">
         {{csrf_field()}}
 
@@ -52,7 +40,17 @@
             <label for="profile-pic">Profile Pic</label>
             <input type="file" class="form-control-file" name="profile-pic" id="profile-pic">
         </div>
-        <select class="form-select" aria-label="Default select example" name="designation_id" id="designation_id">
+    @if (!empty($bosses) && count($bosses))
+    <select  id="boss_name"  name="boss_name" class="form-control">
+
+        <option selected  value=null>select the boss </option>
+        @foreach($bosses as $boss)
+            <option value="{{ $boss }}">{{ $boss }}</option>
+        @endforeach
+
+    </select>
+    @endif
+    <select class="form-select" aria-label="Default select example" name="designation_id" id="designation_id">
 {{--            <label for="">designation Pic</label>--}}
             <option selected>select designation</option>
             <option value="1">manager</option>
@@ -63,10 +61,12 @@
 
         <div class="form-group">
             <button style="cursor:pointer" type="submit" class="btn btn-primary">Submit</button>
+            <a href="/dashboard" type="button" class="btn btn-warning">Back </a>
         </div>
-{{--        @include('partials.formerrors')--}}
+
+
+
     </form>
 
-{{--@endsection--}}
 
 

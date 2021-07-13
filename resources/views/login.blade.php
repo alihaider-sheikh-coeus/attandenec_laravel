@@ -1,4 +1,5 @@
 @extends('basic_layout')
+@extends('flash-messages')
 
 <form method="post" action={{ action('UserController@login')}}>
     {{csrf_field()}}
@@ -17,4 +18,4 @@
     <button style="cursor:pointer" type="submit" class="btn btn-primary">Submit</button>
 </div>
 </form>
-</html>
+
