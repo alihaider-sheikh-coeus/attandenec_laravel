@@ -25,10 +25,13 @@ Route::prefix('user')->middleware(['auth'])->group(function () {
     Route::get('/delete/{id}','UserController@deleteUser')->where('id', '[0-9]+');
 });
 
-//Auth::routes();
-Route::get('/login', 'UserController@loginView')->name('login');
 Route::get('/markattandenceView', 'AttandenceController@markattandenceView')->name('markattandence')->middleware(['auth']);
 Route::view('/dashboard', 'HR.dashboard')->name('hr_dashboard')->middleware(['auth']);
+
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
+
 Route::view('/report', 'HR.report')->name('hr_report')->middleware(['auth']);
 Route::get('/daily_report', 'AttandenceController@generatedailyReport')->name('hr_daily_report')->middleware(['auth']);
 

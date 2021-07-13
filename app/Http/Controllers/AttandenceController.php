@@ -41,20 +41,16 @@ class AttandenceController extends Controller
             ->where('user_id',$user->id)
             ->whereDate('date',Carbon::today())
             ->get();
-//        dd($already_marked);
         if(count($already_marked) && !empty($already_marked))
         {
-            //dd("in if");
             $stat=  DB::table('attandence')
                 ->where('user_id',$user->id)
                 ->whereDate('date',Carbon::today())
                 ->update(['time_in' =>$request->TimeIn,'time_out' =>$request->TimeOut,'status'=>$status]);
-//            return view('attandence');
             return  ($stat)?   $this->markattandenceView() :redirect()->route('markattandence')->with('error','unable to mark attendance');
         }
         else
         {
-//            dd("in else");
             $stat=DB::table('attandence')->insert([
                 ['user_id' =>$user->id,
                     'time_in' =>$request->TimeIn,
@@ -81,9 +77,7 @@ class AttandenceController extends Controller
     }
     public function generatedailyReport(Request $request)
     {
-
-
-        $users=  DB::table('attandence')
+     $users=  DB::table('attandence')
             ->select('status', DB::raw('count(*) as total'))
             ->groupBy('status')
             ->whereDate('date', '=',Carbon::today())

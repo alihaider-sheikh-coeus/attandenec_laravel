@@ -42,4 +42,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Attandence::class,'user_id');
     }
+    public function delete_user_object($user)
+    {
+        $response=false;
+        if($user)
+        {
+            unlink(public_path() .  '/uploads/' . $user->profile_pic );
+            $user->attandence()->delete();
+            $response =(bool)($user->delete()) ;
+        }
+        return $response;
+    }
 }

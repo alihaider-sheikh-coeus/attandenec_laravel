@@ -20,13 +20,14 @@ use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
-    public function loginView()
+    public $user_object;
+    public function __construct()
     {
-        return view('login');
+        $this->user_object = new User();
     }
+
     public function login(Request $request) {
-//        dd($request->all());
-        $validator = Validator::make($request->all(), [
+       $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:6',
         ]);
@@ -53,24 +54,7 @@ class UserController extends Controller
         $bosses=  DB::table('users')
             ->where('designation_id','=',1)
             ->pluck('name');
-//        dd($bosses);
-
         return view('user.create',['bosses'=>$bosses]);
-    }
-
-    public function testData(Request $request)
-    {
-         $late_users=Attandence::with('user:id,email,name')->where('status','=','A')->get()->pluck('user.email');
-
-        $data = array('name'=>"Ali haider", "body" => "your attendance have been marked as absent ");
-         Mail::send('mail', $data, function($mail) use ($late_users)
-        {
-            $mail->from('ali.haider6713@gmail.com');
-            foreach ($late_users AS $user) {
-                $mail->to($user, $name = null);
-            }
-            $mail->subject('Attandence remider');
-        });
     }
     public function store(Request $request)
     {
@@ -116,19 +100,17 @@ class UserController extends Controller
             return redirect()->route('edit_user',['id'=>$user->id])->withErrors($validationResponse['validator'])
                 ->withInput();
         }
-        $check=false;
-    if($request->hasFile('profile-pic'))
+
+        if($request->hasFile('profile-pic'))
     {
-    $check=true;
     $cover = $request->file('profile-pic');
     $extension = $cover->getClientOriginalExtension();
     Storage::disk('public')->put($cover->getFilename().'.'.$extension,  File::get($cover));
-        $user->profile_pic= $cover->getFilename().'.'.$extension;
+    $user->profile_pic= $cover->getFilename().'.'.$extension;
     }
 
                 $user->email=$request->email;
                 $user->name =$request->name;
-//                ($check)??$user->profile_pic= $cover->getFilename().'.'.$extension;
                 $user->designation_id = $request->designation_id;
                 $user->is_hr=$request->has('is_hr')? 1:0;
                 $user->salary=$request->salary;
@@ -141,13 +123,7 @@ class UserController extends Controller
 
     public function deleteUser(Request $request,$id) {
         $user=User::find($id);
-        $response=false;
-        if($user)
-        {
-            unlink(public_path() .  '/uploads/' . $user->profile_pic );
-            $user->attandence()->delete();
-            $response =(bool)($user->delete()) ;
-        }
+        $response = $this->user_object-> delete_user_object($user);
         return  ($response)?  redirect()->route('index_page')->with('success','User Deleted Successfully') :redirect()->route('index_page')->with('Error',"unable to delete user");
     }
     public function showallUser()
