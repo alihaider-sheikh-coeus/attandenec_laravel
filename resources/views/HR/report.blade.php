@@ -12,7 +12,7 @@
     {{csrf_field()}}
 <label for="month">Month: </label>
 <input type="text" id="month" name="month" class="monthPicker" />
- <button style="cursor:pointer" type="submit" class="btn btn-success">Submit</button>
+ <button style="cursor:pointer" type="submit" id="report_submit" class="btn btn-success">Submit</button>
 </form>
 <a href="/dashboard" class="btn btn-warning">Back </a>
 
@@ -57,6 +57,14 @@
                 $(this).val($.datepicker.formatDate('MM yy', new Date(year, month, 1)));
             }
         });
+
+        $("#report_submit").click(function()
+        {
+            if( !$('.monthPicker').val() ) {
+                alert("select the month plz");
+            }
+
+         });
 
         $(".monthPicker").focus(function () {
             $(".ui-datepicker-calendar").hide();

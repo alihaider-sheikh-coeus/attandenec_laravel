@@ -17,12 +17,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::prefix('user')->middleware(['auth'])->group(function () {
-    Route::get('/add', 'UserController@createUser')->name('add');
-    Route::post('/store', 'UserController@store')->name('store');
-    Route::get('/show', 'UserController@showallUser')->name('index_page');
-    Route::get('/edit/{id}', 'UserController@edit')->where('id', '[0-9]+')->name('edit_user');
-    Route::post('/update/{id}','UserController@updateUser')->name('update_user');
-    Route::get('/delete/{id}','UserController@deleteUser')->where('id', '[0-9]+');
+    Route::get('/add', 'HrController@createUser')->name('add');
+    Route::post('/store', 'HrController@store')->name('store');
+    Route::get('/show', 'HrController@showallUser')->name('index_page');
+    Route::get('/edit/{id}', 'HrController@edit')->where('id', '[0-9]+')->name('edit_user');
+    Route::post('/update/{id}','HrController@updateUser')->name('update_user');
+    Route::get('/delete/{id}','HrController@deleteUser')->where('id', '[0-9]+');
 });
 
 Route::get('/markattandenceView', 'AttandenceController@markattandenceView')->name('markattandence')->middleware(['auth']);

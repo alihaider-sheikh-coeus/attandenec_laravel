@@ -2,9 +2,14 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -52,5 +57,29 @@ class User extends Authenticatable
             $response =(bool)($user->delete()) ;
         }
         return $response;
+    }
+    public function storePicture( $request)
+    {
+        $cover = $request->file('profile-pic');
+        $extension = $cover->getClientOriginalExtension();
+        Storage::disk('public')->put($cover->getFilename().'.'.$extension,  File::get($cover));
+        return ["cover"=>$cover,"extension"=>$extension];
+    }
+    public function insertUser($request,$picture)
+    {
+       $status= DB::table('users')->insert([
+            ['email' =>$request->email,
+                'name' =>$request->name,
+                'password'=>bcrypt($request->password),
+                'profile_pic'=> $picture["cover"]->getFilename().'.'.$picture["extension"],
+                'designation_id'=>$request->designation_id,
+                'is_hr'=>$request->has('is_hr')? 1:0,
+                'salary'=>$request->salary,
+                'boss_name'=>$request->boss_name,
+                'department'=>$request->department,
+                'created_at'=>Carbon::now()
+            ],
+        ]);
+       return $status;
     }
 }

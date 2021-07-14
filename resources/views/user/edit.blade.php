@@ -12,7 +12,7 @@
     <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
 @endif
 {{--{{dd($user->email)}};--}}
-<form method="post" action="{{ action('UserController@updateUser', $user)}}" enctype="multipart/form-data">
+<form method="post" action="{{ action('HrController@updateUser', $user)}}" enctype="multipart/form-data">
     {{ csrf_field() }}
     {{ method_field('post') }}
 

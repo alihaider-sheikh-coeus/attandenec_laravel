@@ -1,7 +1,7 @@
 @extends('basic_layout')
 <h1>Create Users</h1>
 
-<form method="post" action={{ action('UserController@store')}} enctype="multipart/form-data">
+<form method="post" action={{ action('HrController@store')}} enctype="multipart/form-data">
         {{csrf_field()}}
 
         <div class="form-group">
