@@ -1,12 +1,11 @@
-@extends('basic_layout')
-@extends('flash-messages')
+@include('basic_layout')
+{{--@include('HR/dashboard')--}}
 <h1>On AttendancePage</h1>
 <!DOCTYPE html>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <html>
 <body>
 <h3>Hi, <strong>{{ \Illuminate\Support\Facades\Auth::user()->name }}</strong> mark your attendance</h3>
-{{--{{dd($attandence_check[0]->time_out)}}--}}
 @php
     $time_in_value=false;
     $time_out_value=false;
@@ -23,7 +22,6 @@
         @endphp
     @endif
 @endif
-{{--{{ dd(($time_out_value)? true:false) }}--}}
 <div class="container">
 
     <form method="post" action="{{ action('AttandenceController@markAttandence')}}">
@@ -46,7 +44,7 @@
             @if( \Illuminate\Support\Facades\Auth::user()->is_hr!=1)
             <a href="/logout" class="btn btn-danger ml-3">Sign Out of Your Account</a>
             @else
-                <a href="/dashboard" type="button" class="btn btn-warning">Back </a>
+                <a href="/dashboard" type="button" class="btn btn-warning">DashBoard </a>
             @endif
         </div>
     </form>

@@ -46,12 +46,12 @@ class SendEmails extends Command
             ->get()
             ->pluck('user.email');
 
-        $data = array('name'=>"Ali haider", "body" => "your attendance have been marked as absent ");
+        $data = array('name'=>"xyz solutions", "body" => "your attendance have been marked as absent ");
         Mail::send('mail', $data, function($mail) use ($late_users)
         {
             $mail->from('ali.haider6713@gmail.com');
             foreach ($late_users AS $user) {
-                $mail->to($user, $name = null);
+                $mail->to($user);
             }
             $mail->subject('Attendance reminder');
         });

@@ -1,4 +1,6 @@
-@extends('basic_layout')
+@include('basic_layout')
+@include('HR/dashboard')
+
 <h1>Create Users</h1>
 
 <form method="post" action={{ action('HrController@store')}} enctype="multipart/form-data">
@@ -50,23 +52,23 @@
 
     </select>
     @endif
-    <select class="form-select" aria-label="Default select example" name="designation_id" id="designation_id">
-{{--            <label for="">designation Pic</label>--}}
-            <option selected>select designation</option>
-            <option value="1">manager</option>
-            <option value="2">hr</option>
-            <option value="3">CEO</option>
-            <option value="4">developer</option>
-        </select>
 
+    @if (!empty($designations) && count($designations))
+        <select  id="boss_name"  name="designation_id" id="designation_id">
+
+            <option selected  value=null>select the designation </option>
+            @foreach($designations as $designation)
+                <option value="{{ $designation->id }}">{{ $designation->name }}</option>
+            @endforeach
+
+        </select>
+    @endif
         <div class="form-group">
             <button style="cursor:pointer" type="submit" class="btn btn-primary">Submit</button>
-            <a href="/dashboard" type="button" class="btn btn-warning">Back </a>
+{{--            <a href="/dashboard" type="button" class="btn btn-warning">Back </a>--}}
         </div>
 
 
 
     </form>
-
-
 

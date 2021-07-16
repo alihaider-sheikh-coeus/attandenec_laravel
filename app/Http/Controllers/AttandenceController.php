@@ -3,36 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Attandence;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+
 
 class AttandenceController extends Controller
 {
-    public $attandence_object;
+    private $attandence_object;
+
     public function __construct()
     {
         $this->attandence_object = new Attandence();
     }
     public function markattandenceView()
     {
-        $attandence_for_today = DB::table('attandence')
-        ->where('user_id',Auth::user()->id)
-        ->whereDate('date',Carbon::today())
-        ->get(['time_in','time_out']);
-
+        $attandence_for_today = $this->attandence_object->attandenceForToday();
         return view('attandence',["attandence_check"=>$attandence_for_today]);
     }
     public function markAttandence(Request $request)
     {
-        $status= $this->attandence_object->attendanceStatus($request);
         $user = Auth::user();
-        $already_marked=DB::table('attandence')
-            ->where('user_id',$user->id)
-            ->whereDate('date',Carbon::today())
-            ->get();
+        $status= $this->attandence_object->attendanceStatus($request);
+        $already_marked = $this->attandence_object->attandenceForToday();
+
         if(count($already_marked) && !empty($already_marked))
         {
             $stat= $this->attandence_object->updateAttendance($request,$user,$status);
@@ -46,24 +39,12 @@ class AttandenceController extends Controller
     }
     public function generateReport(Request $request)
     {
-        $month=explode("/",$request->month);
-
-        $users=  DB::table('attandence')
-            ->select('status', DB::raw('count(*) as total'))
-            ->groupBy('status')
-           ->whereMonth('date', '=',(int)$month[0])
-           ->get();
-
-        return view('HR.report',['users'=>$users]);
+     $users = $this->attandence_object->generateMonthlyReport($request);
+     return view('HR.report',['users'=>$users]);
     }
     public function generatedailyReport(Request $request)
      {
-     $users=  DB::table('attandence')
-            ->select('status', DB::raw('count(*) as total'))
-            ->groupBy('status')
-            ->whereDate('date', '=',Carbon::today())
-            ->get();
-
-        return view('HR.daily_report',['users'=>$users]);
+             $users_from_db = $this->attandence_object->generateDailyReport();
+             return view('HR.daily_report',['users'=>$users_from_db]);
     }
 }

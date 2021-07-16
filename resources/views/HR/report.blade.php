@@ -1,4 +1,5 @@
-@extends('basic_layout')
+@include('basic_layout')
+@include('HR/dashboard')
 <meta charset="utf-8">
 <title>jQuery UI Datepicker - Default functionality</title>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
@@ -14,8 +15,6 @@
 <input type="text" id="month" name="month" class="monthPicker" />
  <button style="cursor:pointer" type="submit" id="report_submit" class="btn btn-success">Submit</button>
 </form>
-<a href="/dashboard" class="btn btn-warning">Back </a>
-
 
 @if (!empty($users) && count($users))
     <table class="table table-sm">
@@ -23,6 +22,7 @@
         <tr>
             <th>Status</th>
             <th>Total</th>
+
         </tr>
         </thead>
         <tbody>
@@ -61,7 +61,7 @@
         $("#report_submit").click(function()
         {
             if( !$('.monthPicker').val() ) {
-                alert("select the month plz");
+                return alert("select the month plz");
             }
 
          });

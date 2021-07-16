@@ -1,5 +1,7 @@
-@extends('basic_layout')
-@extends('flash-messages')
+@include('basic_layout')
+@include('HR/dashboard')
+@include('flash-messages')
+@if (!empty($users) && count($users))
 <table class="table table-sm">
     <thead>
     <tr>
@@ -10,6 +12,7 @@
     </tr>
     </thead>
     <tbody>
+
     @foreach($users as $user)
         <tr>
             <td>{{ $user->name }}</td>
@@ -21,7 +24,8 @@
     @endforeach
     </tbody>
 </table>
-<div class="pagination">
-    {{ $users->render() }}<a href="/dashboard" type="button" class="btn btn-warning">Back </a>
-</div>
 
+<div class="pagination">
+    {{ $users->render() }}
+</div>
+@endif

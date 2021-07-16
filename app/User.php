@@ -15,8 +15,7 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-
-    /**
+  /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -58,7 +57,7 @@ class User extends Authenticatable
         }
         return $response;
     }
-    public function storePicture( $request)
+    public function storePicture($request)
     {
         $cover = $request->file('profile-pic');
         $extension = $cover->getClientOriginalExtension();
@@ -67,7 +66,7 @@ class User extends Authenticatable
     }
     public function insertUser($request,$picture)
     {
-       $status= DB::table('users')->insert([
+       $status= User::insert([
             ['email' =>$request->email,
                 'name' =>$request->name,
                 'password'=>bcrypt($request->password),

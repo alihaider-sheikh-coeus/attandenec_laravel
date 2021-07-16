@@ -12,18 +12,17 @@ use Illuminate\Support\Facades\Validator;
 
 class HrController extends Controller
 {
-    public $user_object;
+    private $user_object;
     public function __construct()
     {
         $this->user_object = new User();
     }
     public function createUser()
     {
-        $bosses=  DB::table('users')
-            ->where('designation_id','=',1)
+        $bosses = User::where('designation_id','=',1)
             ->pluck('name');
-
-        return view('user.create',['bosses'=>$bosses]);
+        $designations = DB::table('designations')->get();
+        return view('user.create',['bosses'=>$bosses,'designations'=>$designations]);
     }
     public function store(Request $request)
     {
@@ -42,11 +41,12 @@ class HrController extends Controller
     public function edit($id)
     {
         $user=User::where('id',$id)->first();
-        return view('user.edit',["user"=>$user]);
+        $designations = DB::table('designations')->get();
+        return view('user.edit',["user"=>$user, 'designations'=>$designations]);
     }
     public function updateUser(Request $request)
     {
-        $check_for_password=($request->password)?true:false;
+        $check_for_password=($request->password) ? true:false;
         $user= User::find($request->id);
         $validationResponse = $this->validateRequestFeildsforedit($request);//function call
         if ($validationResponse['status'] == false) {
@@ -78,14 +78,15 @@ class HrController extends Controller
     }
     public function showallUser()
     {
-        $users = User::where('id', '!=', Auth::user()->id)->orderBy('created_at','DESC')->simplePaginate(2);
+        $users = User::where('id', '!=', Auth::user()->id)->orderBy('created_at','DESC')->simplePaginate(4);
+
         return view('user.index', ['users' => $users]);
     }
     public function validateRequestFeilds($request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'bail|required|min:3|max:255',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'profile-pic'=> 'bail|required|mimes:jpg,jpeg,png,bmp,tiff|max:4096',
             'salary'=>'numeric',
             'designation_id'=>'required',
@@ -101,7 +102,7 @@ class HrController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'bail|required|min:3|max:255',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'profile-pic'=> 'bail|mimes:jpg,jpeg,png,bmp,tiff|max:4096',
             'salary'=>'numeric',
             'password' => 'confirmed|nullable|string|min:6|max:15',
