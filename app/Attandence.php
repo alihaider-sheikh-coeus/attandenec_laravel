@@ -16,27 +16,7 @@ class Attandence extends Model
     {
         return $this->belongsTo(User::class,'user_id');
     }
-    public function attendanceStatus($request)
-    {
-        $status='P';
-        $hour=Carbon::parse($request->TimeIn)->format('H');
 
-        if($request->TimeIn!=null)
-        {
-            if($hour>=11 &&  $hour<12 )
-        {
-            $status='L';
-        } elseif ($hour>=12)
-        {
-            $status='A';
-        }
- else
-        {
-            $status ='P';
-        }
-        }
-        return $status;
-    }
     public function updateAttendance($request,$user,$status)
     {
         $stat=  Attandence::where('user_id',$user->id)
@@ -117,7 +97,7 @@ class Attandence extends Model
     public function generateDailyReport()
     {
         return Attandence::join('users','attandence.user_id','=','users.id')
-            ->select( DB::raw('status,time_in,time_out,users.email,name'))
+            ->selectRaw( 'status,time_in,time_out,users.email,name')
             ->whereDate('date', '=',Carbon::today())
             ->get();
     }

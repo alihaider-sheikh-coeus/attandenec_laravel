@@ -42,6 +42,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function userBoss()
+    {
+
+    }
     public function attandence()
     {
         return $this->hasMany(Attandence::class,'user_id');
@@ -57,13 +61,16 @@ class User extends Authenticatable
         }
         return $response;
     }
-    public function storePicture($request)
+
+public function getUserObject($request)
+{
+    return User::where('email', $request->email)->first();
+}
+    public function getUserObjectwithid($id)
     {
-        $cover = $request->file('profile-pic');
-        $extension = $cover->getClientOriginalExtension();
-        Storage::disk('public')->put($cover->getFilename().'.'.$extension,  File::get($cover));
-        return ["cover"=>$cover,"extension"=>$extension];
+        return User::where('email', $id)->first();
     }
+
     public function insertUser($request,$picture)
     {
        $status= User::insert([
@@ -74,11 +81,16 @@ class User extends Authenticatable
                 'designation_id'=>$request->designation_id,
                 'is_hr'=>$request->has('is_hr')? 1:0,
                 'salary'=>$request->salary,
-                'boss_name'=>$request->boss_name,
+                'boss_id'=>$request->boss_name,
                 'department'=>$request->department,
                 'created_at'=>Carbon::now()
             ],
         ]);
        return $status;
+    }
+    public function userWithManagerDesignation()
+    {
+        return User::where('designation_id','=',1)
+            ->pluck('name');
     }
 }

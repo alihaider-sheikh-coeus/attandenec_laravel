@@ -47,7 +47,7 @@
 
         <option selected  value=null>select the boss </option>
         @foreach($bosses as $boss)
-            <option value="{{ $boss }}">{{ $boss }}</option>
+            <option value="{{ $boss->id}}">{{ $boss->name }}</option>
         @endforeach
 
     </select>

@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\AbsentUsers;
 use App\Console\Commands\SendEmails;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -15,6 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         'mail'=>SendEmails::class,
+        'emailToBoss'=>AbsentUsers::class
     ];
 
     /**
@@ -26,7 +28,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
          $schedule->command('mail')
-                  ->everyMinute();
+                  ->dailyAt('11:01');
+        $schedule->command('emailToBoss')
+            ->dailyAt('12:01');
     }
 
     /**

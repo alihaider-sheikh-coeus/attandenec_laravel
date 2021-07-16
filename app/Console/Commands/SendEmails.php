@@ -40,8 +40,7 @@ class SendEmails extends Command
      */
     public function handle()
     {
-        $late_users=
-            Attandence::with('user:id,email,name')
+        $late_users = Attandence::with('user:id,email,name')
             ->where('status','=','A')
             ->get()
             ->pluck('user.email');

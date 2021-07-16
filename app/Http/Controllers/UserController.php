@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +10,11 @@ use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
+    private $user_object;
+    public function __construct()
+    {
+        $this->user_object = new User();
+    }
     public function login(Request $request) {
        $validator = Validator::make($request->all(), [
             'email' => 'required|email',
@@ -23,7 +26,7 @@ class UserController extends Controller
         }
         $userCredentials = $request->only('email', 'password');
         if (Auth::attempt($userCredentials)) {
-            $user = User::where('email', $request->email)->first();
+            $user = $this->user_object->getUserObject($request);
             Session::put('user',$user);
             return ($user->is_hr)?redirect()->route('markattandence')->with('success','You successfully logged in to this website.'):redirect()->route('markattandence');
          }
@@ -35,6 +38,5 @@ class UserController extends Controller
         Auth::logout();
         return Redirect('login');
     }
-
 
 }

@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Designation;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class HrController extends Controller
@@ -19,9 +22,8 @@ class HrController extends Controller
     }
     public function createUser()
     {
-        $bosses = User::where('designation_id','=',1)
-            ->pluck('name');
-        $designations = DB::table('designations')->get();
+        $bosses = $this->user_object->userWithManagerDesignation();
+        $designations = Designation::all();
         return view('user.create',['bosses'=>$bosses,'designations'=>$designations]);
     }
     public function store(Request $request)
@@ -33,15 +35,16 @@ class HrController extends Controller
                 ->withErrors($validationResponse['validator'])
                 ->withInput();
         }
-        $picture=$this->user_object->storePicture($request);
+//        dd($request);
+        $picture=$this->storePicture($request);
         $status =$this->user_object->insertUser($request,$picture);
         return  ($status)?  redirect()->route('index_page')->with('success','User Created Successfully') :redirect()->route('index_page')->with('Error',"unable to create user");
 
     }
     public function edit($id)
     {
-        $user=User::where('id',$id)->first();
-        $designations = DB::table('designations')->get();
+        $user=$this->user_object->getUserObjectwithid($id);
+        $designations = Designation::all();
         return view('user.edit',["user"=>$user, 'designations'=>$designations]);
     }
     public function updateUser(Request $request)
@@ -56,7 +59,7 @@ class HrController extends Controller
 
         if($request->hasFile('profile-pic'))
         {
-            $picture=$this->user_object->storePicture($request);
+            $picture=$this->storePicture($request);
             $user->profile_pic= $picture["cover"]->getFilename().'.'.$picture["extension"];
         }
 
@@ -113,5 +116,12 @@ class HrController extends Controller
             $return['status'] = false;
         }
         return $return;
+    }
+    public function storePicture($request)
+    {
+        $cover = $request->file('profile-pic');
+        $extension = $cover->getClientOriginalExtension();
+        Storage::disk('public')->put($cover->getFilename().'.'.$extension,  File::get($cover));
+        return ["cover"=>$cover,"extension"=>$extension];
     }
 }

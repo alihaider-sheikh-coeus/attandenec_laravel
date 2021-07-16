@@ -39,6 +39,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
 });
+Route::get('/test', 'UserController@test');
 
 Route::post('/loginandverify', 'UserController@login');
 Route::get('/logout', 'UserController@logout')->name('logout');
